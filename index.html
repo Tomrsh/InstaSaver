@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InstaSave - Download Instagram Photos/Videos/Reels/Stories</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        h1 {
+            color: #E1306C;
+            margin-bottom: 20px;
+        }
+        
+        p.subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .input-box {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        
+        input[type="text"] {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 5px 0 0 5px;
+            font-size: 16px;
+            outline: none;
+            transition: border 0.3s;
+        }
+        
+        input[type="text"]:focus {
+            border-color: #E1306C;
+        }
+        
+        button {
+            background: #E1306C;
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        
+        button:hover {
+            background: #C13584;
+        }
+        
+        .result {
+            margin-top: 30px;
+            display: none;
+        }
+        
+        .download-btn {
+            display: inline-block;
+            background: #405DE6;
+            color: white;
+            padding: 12px 20px;
+            margin: 10px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        
+        .download-btn:hover {
+            background: #5851DB;
+        }
+        
+        .how-to {
+            margin-top: 50px;
+            text-align: left;
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 5px;
+        }
+        
+        .how-to h2 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .how-to ol {
+            padding-left: 20px;
+        }
+        
+        .how-to li {
+            margin-bottom: 10px;
+            color: #555;
+        }
+        
+        footer {
+            margin-top: 50px;
+            text-align: center;
+            color: #777;
+            font-size: 14px;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+                margin: 20px auto;
+            }
+            
+            .input-box {
+                flex-direction: column;
+            }
+            
+            input[type="text"] {
+                border-radius: 5px;
+                margin-bottom: 10px;
+            }
+            
+            button {
+                border-radius: 5px;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>InstaSave Downloader</h1>
+        <p class="subtitle">Download Instagram Photos, Videos, Reels, and Stories in HD Quality</p>
+        
+        <div class="input-box">
+            <input type="text" id="url" placeholder="Paste Instagram URL here...">
+            <button onclick="downloadContent()">Download</button>
+        </div>
+        
+        <div class="result" id="result">
+            <!-- Results will appear here -->
+        </div>
+        
+        <div class="how-to">
+            <h2>How to Download Instagram Content:</h2>
+            <ol>
+                <li>Open Instagram and find the post/reel/story you want to download</li>
+                <li>Tap on the three dots (⋯) at the top right of the post</li>
+                <li>Select "Copy link" or "Copy URL"</li>
+                <li>Paste the link in the input field above</li>
+                <li>Click the Download button</li>
+                <li>Save your content with one click!</li>
+            </ol>
+        </div>
+        
+        <footer>
+            <p>Disclaimer: This tool is for personal use only. Please respect copyright and only download content you have permission to use.</p>
+        </footer>
+    </div>
+    
+    <script>
+        function downloadContent() {
+            const url = document.getElementById('url').value.trim();
+            const resultDiv = document.getElementById('result');
+            
+            if (!url) {
+                showError("Please enter an Instagram URL");
+                return;
+            }
+            
+            if (!url.includes('instagram.com')) {
+                showError("Please enter a valid Instagram URL");
+                return;
+            }
+            
+            resultDiv.innerHTML = '<p style="color:#333">Processing your request... <div class="loader" style="display:inline-block; width:20px; height:20px; border:3px solid #f3f3f3; border-radius:50%; border-top:3px solid #E1306C; animation:spin 1s linear infinite;"></div></p>';
+            resultDiv.style.display = 'block';
+            
+            // In a real implementation, this would call your PHP backend
+            // For demo, we'll simulate a response after 2 seconds
+            setTimeout(() => {
+                const randomType = Math.random() > 0.5 ? 'video' : 'image';
+                const randomQuality = Math.random() > 0.5 ? 'HD' : 'Standard';
+                
+                resultDiv.innerHTML = `
+                    <h3>Download Options</h3>
+                    <p><strong>Content type:</strong> Instagram ${url.includes('reel') ? 'Reel' : url.includes('story') ? 'Story' : 'Post'}</p>
+                    <p><strong>Quality:</strong> ${randomQuality}</p>
+                    <a href="#" class="download-btn" onclick="alert('In a real implementation, this would download the ${randomType}')">Download ${randomType.toUpperCase()}</a>
+                    ${randomType === 'video' ? '<a href="#" class="download-btn" onclick="alert(\'In a real implementation, this would download the audio\')">Download Audio (MP3)</a>' : ''}
+                `;
+            }, 2000);
+        }
+        
+        function showError(message) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = `<p style="color:red">${message}</p>`;
+            resultDiv.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
