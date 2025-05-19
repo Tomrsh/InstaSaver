@@ -657,3 +657,129 @@
             },
             photo: {
                 url: 'https://example.com/download/photo123',
+                thumbnail: 'https://via.placeholder.com/600x600/405DE6/FFFFFF?text=Photo+Preview'
+            },
+            video: {
+                url: 'https://example.com/download/video123',
+                thumbnail: 'https://via.placeholder.com/600x800/FD1D1D/FFFFFF?text=Video+Preview'
+            },
+            story: {
+                url: 'https://example.com/download/story123',
+                thumbnail: 'https://via.placeholder.com/600x1067/C13584/FFFFFF?text=Story+Preview'
+            }
+        };
+
+        // Current media to download
+        let currentMedia = null;
+
+        // Event Listeners
+        fetchBtn.addEventListener('click', fetchMedia);
+        downloadBtn.addEventListener('click', downloadMedia);
+        copyBtn.addEventListener('click', copyMediaLink);
+        optionBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                optionBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            });
+        });
+
+        // Fetch media function
+        function fetchMedia() {
+            const url = instaUrl.value.trim();
+            
+            // Validate URL
+            if (!url) {
+                showError('Please enter an Instagram URL');
+                return;
+            }
+            
+            if (!isValidInstagramUrl(url)) {
+                showError('Please enter a valid Instagram URL');
+                return;
+            }
+            
+            // Show loader
+            loader.style.display = 'block';
+            errorMessage.style.display = 'none';
+            resultContainer.style.display = 'none';
+            
+            // Simulate API call with timeout
+            setTimeout(() => {
+                loader.style.display = 'none';
+                
+                // Determine media type from URL (simplified for demo)
+                let mediaType = 'photo';
+                if (url.includes('/reel/') || url.includes('/reels/')) {
+                    mediaType = 'reel';
+                } else if (url.includes('/tv/') || url.includes('/video/')) {
+                    mediaType = 'video';
+                } else if (url.includes('/stories/')) {
+                    mediaType = 'story';
+                }
+                
+                // Set current media
+                currentMedia = sampleMedia[mediaType];
+                
+                // Display result
+                mediaPreview.src = currentMedia.thumbnail;
+                resultContainer.style.display = 'block';
+                
+            }, 1500);
+        }
+
+        // Download media function
+        function downloadMedia() {
+            if (!currentMedia) return;
+            
+            // In a real app, this would initiate the download
+            // For demo, we'll show an alert
+            alert('Download would start for: ' + currentMedia.url);
+            
+            // Simulate download (in a real app, you would use window.location.href or create an anchor tag)
+            console.log('Downloading:', currentMedia.url);
+        }
+
+        // Copy media link function
+        function copyMediaLink() {
+            if (!currentMedia) return;
+            
+            navigator.clipboard.writeText(currentMedia.url)
+                .then(() => {
+                    // Show success message
+                    const originalText = copyBtn.innerHTML;
+                    copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                    
+                    setTimeout(() => {
+                        copyBtn.innerHTML = originalText;
+                    }, 2000);
+                })
+                .catch(err => {
+                    console.error('Failed to copy: ', err);
+                });
+        }
+
+        // Show error message
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+            resultContainer.style.display = 'none';
+            loader.style.display = 'none';
+        }
+
+        // Validate Instagram URL (simplified)
+        function isValidInstagramUrl(url) {
+            return url.includes('instagram.com/');
+        }
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
