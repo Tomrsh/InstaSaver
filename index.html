@@ -1,1 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InstaSave - Download Instagram Content</title>
+    <style>
+        /* CSS Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
+        /* Global Styles */
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(45deg, #405DE6, #5851DB, #833AB4, #C13584, #E1306C, #FD1D1D);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            margin-right: 10px;
+            font-size: 28px;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 20px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s;
+        }
+
+        nav ul li a:hover {
+            opacity: 0.8;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://via.placeholder.com/1200x600/833AB4/FFFFFF?text=Instagram+Downloader');
+            background-size: cover;
+            background-position: center;
+            height: 400px;
+            display: flex;
+            align-items: center;
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .hero-content {
+            width: 100%;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 20px;
+            margin-bottom: 30px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Download Section */
+        .download-section {
+            padding: 40px 0;
+            text-align: center;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 32px;
+            color: #333;
+        }
+
+        .download-box {
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .input-group {
+            display: flex;
+            margin-bottom: 20px;
+        }
+
+        .url-input {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 5px 0 0 5px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .url-input:focus {
+            border-color: #833AB4;
+        }
+
+        .download-btn {
+            padding: 15px 30px;
+            background: linear-gradient(45deg, #405DE6, #833AB4);
+            color: white;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        .download-btn:hover {
+            opacity: 0.9;
+        }
+
+        .download-options {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .option-btn {
+            padding: 10px 20px;
+            background-color: #f0f0f0;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .option-btn.active {
+            background: linear-gradient(45deg, #405DE6, #833AB4);
+            color: white;
+        }
+
+        .result-container {
+            margin-top: 30px;
+            display: none;
+        }
+
+        .media-preview {
+            max-width: 100%;
+            max-height: 400px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .download-actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .action-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: opacity 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .download-action {
+            background: linear-gradient(45deg, #405DE6, #833AB4);
+            color: white;
+        }
+
+        .copy-link {
+            background-color: #333;
+            color: white;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 60px 0;
+            background-color: #f9f9f9;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .feature-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 50px;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #405DE6, #833AB4);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .feature-title {
+            font-size: 22px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        /* How To Section */
+        .how-to {
+            padding: 60px 0;
+        }
+
+        .steps {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .step {
+            display: flex;
+            margin-bottom: 30px;
+            align-items: flex-start;
+        }
+
+        .step-number {
+            background: linear-gradient(45deg, #405DE6, #833AB4);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+
+        .step-content h3 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 40px 0 20px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .footer-column h3 {
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-column ul li a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-column ul li a:hover {
+            color: white;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .social-links a {
+            color: white;
+            font-size: 20px;
+            transition: opacity 0.3s;
+        }
+
+        .social-links a:hover {
+            opacity: 0.8;
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #444;
+            color: #aaa;
+            font-size: 14px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 36px;
+            }
+
+            .hero p {
+                font-size: 18px;
+            }
+
+            .input-group {
+                flex-direction: column;
+            }
+
+            .url-input {
+                border-radius: 5px;
+                margin-bottom: 10px;
+            }
+
+            .download-btn {
+                border-radius: 5px;
+                width: 100%;
+            }
+
+            .header-container {
+                flex-direction: column;
+            }
+
+            nav ul {
+                margin-top: 20px;
+            }
+
+            nav ul li {
+                margin: 0 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero {
+                height: 300px;
+            }
+
+            .hero h1 {
+                font-size: 28px;
+            }
+
+            .download-actions {
+                flex-direction: column;
+            }
+
+            .action-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* Loader */
+        .loader {
+            display: none;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #833AB4;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Error Message */
+        .error-message {
+            color: #ff3333;
+            margin-top: 10px;
+            display: none;
+        }
+    </style>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <i class="fab fa-instagram"></i>
+                <span>InstaSave</span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#how-to">How To</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container hero-content">
+            <h1>Download Instagram Content Easily</h1>
+            <p>Save Reels, Photos, Videos, and Stories from Instagram in high quality with just one click. No registration required!</p>
+        </div>
+    </section>
+
+    <!-- Download Section -->
+    <section class="download-section">
+        <div class="container">
+            <h2 class="section-title">Download Instagram Content</h2>
+            <div class="download-box">
+                <div class="input-group">
+                    <input type="text" class="url-input" id="instaUrl" placeholder="Paste Instagram URL here...">
+                    <button class="download-btn" id="fetchBtn">
+                        <i class="fas fa-search"></i> Fetch
+                    </button>
+                </div>
+                <div class="error-message" id="errorMessage"></div>
+                <div class="loader" id="loader"></div>
+
+                <div class="download-options">
+                    <button class="option-btn active" data-type="all">All</button>
+                    <button class="option-btn" data-type="reel">Reels</button>
+                    <button class="option-btn" data-type="photo">Photos</button>
+                    <button class="option-btn" data-type="video">Videos</button>
+                    <button class="option-btn" data-type="story">Stories</button>
+                </div>
+
+                <div class="result-container" id="resultContainer">
+                    <img src="" alt="Media Preview" class="media-preview" id="mediaPreview">
+                    <div class="download-actions">
+                        <button class="action-btn download-action" id="downloadBtn">
+                            <i class="fas fa-download"></i> Download
+                        </button>
+                        <button class="action-btn copy-link" id="copyBtn">
+                            <i class="fas fa-copy"></i> Copy Link
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <h2 class="section-title">Why Choose InstaSave?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3 class="feature-title">Fast Download</h3>
+                    <p>Download Instagram content in seconds with our high-speed servers and optimized process.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-lock-open"></i>
+                    </div>
+                    <h3 class="feature-title">No Login Required</h3>
+                    <p>Download content without needing to log in to your Instagram account.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3 class="feature-title">Works on All Devices</h3>
+                    <p>Use our service on any device - smartphone, tablet, or computer.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-cloud-download-alt"></i>
+                    </div>
+                    <h3 class="feature-title">High Quality</h3>
+                    <p>Get the highest quality downloads available from Instagram.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3 class="feature-title">Safe & Secure</h3>
+                    <p>Your privacy is important to us. We don't store your data or downloads.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-euro-sign"></i>
+                    </div>
+                    <h3 class="feature-title">100% Free</h3>
+                    <p>Our service is completely free with no hidden charges or subscriptions.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How To Section -->
+    <section class="how-to" id="how-to">
+        <div class="container">
+            <h2 class="section-title">How To Download Instagram Content</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Copy the Instagram URL</h3>
+                        <p>Open Instagram and copy the link of the Reel, Photo, Video, or Story you want to download.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Paste the URL</h3>
+                        <p>Paste the copied URL into the input field above on our website.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Click Fetch</h3>
+                        <p>Click the "Fetch" button to analyze the content and prepare it for download.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h3>Download Your Content</h3>
+                        <p>Click the "Download" button to save the content to your device.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>InstaSave</h3>
+                    <p>The easiest way to download content from Instagram. Fast, free, and secure.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#how-to">How To</a></li>
+                        <li><a href="#">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">DMCA</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                &copy; 2023 InstaSave. All rights reserved. This tool is not affiliated with Instagram.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // DOM Elements
+        const instaUrl = document.getElementById('instaUrl');
+        const fetchBtn = document.getElementById('fetchBtn');
+        const loader = document.getElementById('loader');
+        const errorMessage = document.getElementById('errorMessage');
+        const resultContainer = document.getElementById('resultContainer');
+        const mediaPreview = document.getElementById('mediaPreview');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const optionBtns = document.querySelectorAll('.option-btn');
+
+        // Sample media data (in a real app, this would come from an API)
+        const sampleMedia = {
+            reel: {
+                url: 'https://example.com/download/reel123',
+                thumbnail: 'https://via.placeholder.com/600x800/833AB4/FFFFFF?text=Reel+Preview'
+            },
+            photo: {
+                url: 'https://example.com/download/photo123',
