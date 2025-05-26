@@ -3,781 +3,406 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>InstaSave - Download Instagram Content</title>
+    <title>Premium Movies and webseries</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* CSS Reset */
-        * {
+        :root {
+            --primary-color: #405DE6;
+            --secondary-color: #5851DB;
+            --accent-color: #FD1D1D;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #fafafa;
         }
-
-        /* Global Styles */
-        body {
-            background-color: #f5f5f5;
-            color: #333;
-            line-height: 1.6;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        /* Header Styles */
-        header {
-            background: linear-gradient(45deg, #405DE6, #5851DB, #833AB4, #C13584, #E1306C, #FD1D1D);
-            color: white;
-            padding: 20px 0;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .header-container {
+        
+        .navbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-        }
-
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-        }
-
-        .logo i {
-            margin-right: 10px;
-            font-size: 28px;
-        }
-
-        nav ul {
-            display: flex;
-            list-style: none;
-        }
-
-        nav ul li {
-            margin-left: 20px;
-        }
-
-        nav ul li a {
+            padding: 15px 5%;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
             color: white;
-            text-decoration: none;
-            font-weight: 500;
-            transition: opacity 0.3s;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-
-        nav ul li a:hover {
-            opacity: 0.8;
+        
+        .search-bar {
+            flex-grow: 0.5;
+            margin: 0 20px;
         }
-
-        /* Hero Section */
-        .hero {
-            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://via.placeholder.com/1200x600/833AB4/FFFFFF?text=Instagram+Downloader');
-            background-size: cover;
-            background-position: center;
-            height: 400px;
-            display: flex;
-            align-items: center;
-            text-align: center;
-            color: white;
-            margin-bottom: 40px;
-        }
-
-        .hero-content {
+        
+        .search-bar input {
             width: 100%;
-        }
-
-        .hero h1 {
-            font-size: 48px;
-            margin-bottom: 20px;
-        }
-
-        .hero p {
-            font-size: 20px;
-            margin-bottom: 30px;
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        /* Download Section */
-        .download-section {
-            padding: 40px 0;
-            text-align: center;
-        }
-
-        .section-title {
-            text-align: center;
-            margin-bottom: 40px;
-            font-size: 32px;
-            color: #333;
-        }
-
-        .download-box {
-            background-color: white;
-            border-radius: 10px;
-            padding: 30px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .input-group {
-            display: flex;
-            margin-bottom: 20px;
-        }
-
-        .url-input {
-            flex: 1;
-            padding: 15px;
-            border: 2px solid #ddd;
-            border-radius: 5px 0 0 5px;
-            font-size: 16px;
+            padding: 8px 15px;
+            border-radius: 8px;
+            border: none;
             outline: none;
-            transition: border-color 0.3s;
         }
-
-        .url-input:focus {
-            border-color: #833AB4;
-        }
-
-        .download-btn {
-            padding: 15px 30px;
-            background: linear-gradient(45deg, #405DE6, #833AB4);
-            color: white;
-            border: none;
-            border-radius: 0 5px 5px 0;
-            font-size: 16px;
-            font-weight: bold;
+        
+        .menu-dots {
             cursor: pointer;
-            transition: opacity 0.3s;
+            position: relative;
         }
-
-        .download-btn:hover {
-            opacity: 0.9;
-        }
-
-        .download-options {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .option-btn {
-            padding: 10px 20px;
-            background-color: #f0f0f0;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-weight: 500;
-        }
-
-        .option-btn.active {
-            background: linear-gradient(45deg, #405DE6, #833AB4);
-            color: white;
-        }
-
-        .result-container {
-            margin-top: 30px;
+        
+        .dropdown-menu {
             display: none;
-        }
-
-        .media-preview {
-            max-width: 100%;
-            max-height: 400px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        .download-actions {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-        }
-
-        .action-btn {
-            padding: 12px 25px;
-            border: none;
-            border-radius: 5px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: opacity 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .download-action {
-            background: linear-gradient(45deg, #405DE6, #833AB4);
-            color: white;
-        }
-
-        .copy-link {
-            background-color: #333;
-            color: white;
-        }
-
-        /* Features Section */
-        .features {
-            padding: 60px 0;
-            background-color: #f9f9f9;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-top: 40px;
-        }
-
-        .feature-card {
+            position: absolute;
+            right: 0;
             background-color: white;
+            min-width: 200px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            z-index: 1;
+            border-radius: 8px;
+        }
+        
+        .dropdown-menu a {
+            color: var(--dark-color);
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+        
+        .dropdown-menu a:hover {
+            background-color: var(--light-color);
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px 5%;
+        }
+        
+        .website-card {
+            background: white;
             border-radius: 10px;
-            padding: 30px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            text-align: center;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             transition: transform 0.3s;
         }
-
-        .feature-card:hover {
+        
+        .website-card:hover {
             transform: translateY(-5px);
         }
-
-        .feature-icon {
-            font-size: 50px;
-            margin-bottom: 20px;
-            background: linear-gradient(45deg, #405DE6, #833AB4);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
+        
+        .card-image {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
         }
-
-        .feature-title {
-            font-size: 22px;
-            margin-bottom: 15px;
-            color: #333;
+        
+        .card-content {
+            padding: 15px;
         }
-
-        /* How To Section */
-        .how-to {
-            padding: 60px 0;
-        }
-
-        .steps {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .step {
-            display: flex;
-            margin-bottom: 30px;
-            align-items: flex-start;
-        }
-
-        .step-number {
-            background: linear-gradient(45deg, #405DE6, #833AB4);
-            color: white;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
+        
+        .pagination {
             display: flex;
             justify-content: center;
-            align-items: center;
-            font-weight: bold;
-            margin-right: 20px;
-            flex-shrink: 0;
+            padding: 20px;
         }
-
-        .step-content h3 {
-            margin-bottom: 10px;
-            color: #333;
-        }
-
-        /* Footer */
-        footer {
-            background-color: #333;
+        
+        .pagination button {
+            padding: 8px 16px;
+            margin: 0 5px;
+            border: none;
+            background-color: var(--primary-color);
             color: white;
-            padding: 40px 0 20px;
+            border-radius: 5px;
+            cursor: pointer;
         }
-
-        .footer-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 30px;
-            margin-bottom: 30px;
-        }
-
-        .footer-column h3 {
-            margin-bottom: 20px;
-            font-size: 18px;
-        }
-
-        .footer-column ul {
-            list-style: none;
-        }
-
-        .footer-column ul li {
-            margin-bottom: 10px;
-        }
-
-        .footer-column ul li a {
-            color: #ccc;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-
-        .footer-column ul li a:hover {
-            color: white;
-        }
-
-        .social-links {
-            display: flex;
-            gap: 15px;
-            margin-top: 15px;
-        }
-
-        .social-links a {
-            color: white;
-            font-size: 20px;
-            transition: opacity 0.3s;
-        }
-
-        .social-links a:hover {
-            opacity: 0.8;
-        }
-
-        .copyright {
-            text-align: center;
-            padding-top: 20px;
-            border-top: 1px solid #444;
-            color: #aaa;
-            font-size: 14px;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 36px;
-            }
-
-            .hero p {
-                font-size: 18px;
-            }
-
-            .input-group {
-                flex-direction: column;
-            }
-
-            .url-input {
-                border-radius: 5px;
-                margin-bottom: 10px;
-            }
-
-            .download-btn {
-                border-radius: 5px;
-                width: 100%;
-            }
-
-            .header-container {
-                flex-direction: column;
-            }
-
-            nav ul {
-                margin-top: 20px;
-            }
-
-            nav ul li {
-                margin: 0 10px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .hero {
-                height: 300px;
-            }
-
-            .hero h1 {
-                font-size: 28px;
-            }
-
-            .download-actions {
-                flex-direction: column;
-            }
-
-            .action-btn {
-                width: 100%;
-                justify-content: center;
-            }
-        }
-
-        /* Loader */
-        .loader {
+        
+        /* Admin Panel Styles */
+        .admin-panel {
             display: none;
-            border: 5px solid #f3f3f3;
-            border-top: 5px solid #833AB4;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
+            background-color: white;
+            padding: 20px;
+            margin: 20px 5%;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Error Message */
-        .error-message {
-            color: #ff3333;
-            margin-top: 10px;
+        
+        /* Help Center Modal */
+        .modal {
             display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 20px;
+            width: 60%;
+            border-radius: 10px;
         }
     </style>
-    <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <!-- Header -->
-    <header>
-        <div class="container header-container">
-            <div class="logo">
-                <i class="fab fa-instagram"></i>
-                <span>InstaSave</span>
-            </div>
-            <nav>
-                <ul>
-                    <li><a href="#">Home</a></li>
-                    <li><a href="#features">Features</a></li>
-                    <li><a href="#how-to">How To</a></li>
-                    <li><a href="#contact">Contact</a></li>
-                </ul>
-            </nav>
+    <nav class="navbar">
+        <div class="logo">
+            <h1>Movies and webseries</h1>
+            
         </div>
-    </header>
-
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="container hero-content">
-            <h1>Download Instagram Content Easily</h1>
-            <p>Save Reels, Photos, Videos, and Stories from Instagram in high quality with just one click. No registration required!</p>
+        <div class="search-bar">
+            <input type="text" placeholder="Search websites..." id="searchInput">
         </div>
-    </section>
-
-    <!-- Download Section -->
-    <section class="download-section">
-        <div class="container">
-            <h2 class="section-title">Download Instagram Content</h2>
-            <div class="download-box">
-                <div class="input-group">
-                    <input type="text" class="url-input" id="instaUrl" placeholder="Paste Instagram URL here...">
-                    <button class="download-btn" id="fetchBtn">
-                        <i class="fas fa-search"></i> Fetch
-                    </button>
-                </div>
-                <div class="error-message" id="errorMessage"></div>
-                <div class="loader" id="loader"></div>
-
-                <div class="download-options">
-                    <button class="option-btn active" data-type="all">All</button>
-                    <button class="option-btn" data-type="reel">Reels</button>
-                    <button class="option-btn" data-type="photo">Photos</button>
-                    <button class="option-btn" data-type="video">Videos</button>
-                    <button class="option-btn" data-type="story">Stories</button>
-                </div>
-
-                <div class="result-container" id="resultContainer">
-                    <img src="" alt="Media Preview" class="media-preview" id="mediaPreview">
-                    <div class="download-actions">
-                        <button class="action-btn download-action" id="downloadBtn">
-                            <i class="fas fa-download"></i> Download
-                        </button>
-                        <button class="action-btn copy-link" id="copyBtn">
-                            <i class="fas fa-copy"></i> Copy Link
-                        </button>
-                    </div>
-                </div>
+        <div class="menu-dots" id="menuDots">
+            <i class="fas fa-ellipsis-v"></i>
+            <div class="dropdown-menu" id="dropdownMenu">
+                <a href="#" id="helpCenterBtn">Help Center</a>
+                <a href="#" id="adminLoginBtn">Admin Login</a>
+                <a href="#">About</a>
             </div>
         </div>
-    </section>
-
-    <!-- Features Section -->
-    <section class="features" id="features">
-        <div class="container">
-            <h2 class="section-title">Why Choose InstaSave?</h2>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-bolt"></i>
-                    </div>
-                    <h3 class="feature-title">Fast Download</h3>
-                    <p>Download Instagram content in seconds with our high-speed servers and optimized process.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-lock-open"></i>
-                    </div>
-                    <h3 class="feature-title">No Login Required</h3>
-                    <p>Download content without needing to log in to your Instagram account.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-mobile-alt"></i>
-                    </div>
-                    <h3 class="feature-title">Works on All Devices</h3>
-                    <p>Use our service on any device - smartphone, tablet, or computer.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-cloud-download-alt"></i>
-                    </div>
-                    <h3 class="feature-title">High Quality</h3>
-                    <p>Get the highest quality downloads available from Instagram.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-shield-alt"></i>
-                    </div>
-                    <h3 class="feature-title">Safe & Secure</h3>
-                    <p>Your privacy is important to us. We don't store your data or downloads.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-euro-sign"></i>
-                    </div>
-                    <h3 class="feature-title">100% Free</h3>
-                    <p>Our service is completely free with no hidden charges or subscriptions.</p>
-                </div>
-            </div>
+    </nav>
+    
+    <div class="main-content" id="websitesContainer">
+        <!-- Websites will be loaded here dynamically -->
+    </div>
+    
+    <div class="pagination">
+        <button id="prevBtn">Previous</button>
+        <button id="nextBtn">Next</button>
+    </div>
+    
+    <!-- Admin Panel -->
+    <div class="admin-panel" id="adminPanel">
+        <h2>Admin Panel</h2>
+        <div class="admin-actions">
+            <button id="addWebsiteBtn">Add New Website</button>
+            <button id="addBlogBtn">Add New Blog Post</button>
         </div>
-    </section>
-
-    <!-- How To Section -->
-    <section class="how-to" id="how-to">
-        <div class="container">
-            <h2 class="section-title">How To Download Instagram Content</h2>
-            <div class="steps">
-                <div class="step">
-                    <div class="step-number">1</div>
-                    <div class="step-content">
-                        <h3>Copy the Instagram URL</h3>
-                        <p>Open Instagram and copy the link of the Reel, Photo, Video, or Story you want to download.</p>
-                    </div>
-                </div>
-                <div class="step">
-                    <div class="step-number">2</div>
-                    <div class="step-content">
-                        <h3>Paste the URL</h3>
-                        <p>Paste the copied URL into the input field above on our website.</p>
-                    </div>
-                </div>
-                <div class="step">
-                    <div class="step-number">3</div>
-                    <div class="step-content">
-                        <h3>Click Fetch</h3>
-                        <p>Click the "Fetch" button to analyze the content and prepare it for download.</p>
-                    </div>
-                </div>
-                <div class="step">
-                    <div class="step-number">4</div>
-                    <div class="step-content">
-                        <h3>Download Your Content</h3>
-                        <p>Click the "Download" button to save the content to your device.</p>
-                    </div>
-                </div>
-            </div>
+        <div id="adminContent">
+            <!-- Admin content will be loaded here -->
         </div>
-    </section>
-
-    <!-- Footer -->
-    <footer id="contact">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-column">
-                    <h3>InstaSave</h3>
-                    <p>The easiest way to download content from Instagram. Fast, free, and secure.</p>
-                    <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-youtube"></i></a>
-                    </div>
+    </div>
+    
+    <!-- Help Center Modal -->
+    <div class="modal" id="helpModal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Help Center</h2>
+            <form id="helpForm">
+                <div class="form-group">
+                    <label for="helpSubject">Subject</label>
+                    <input type="text" id="helpSubject" required>
                 </div>
-                <div class="footer-column">
-                    <h3>Quick Links</h3>
-                    <ul>
-                        <li><a href="#">Home</a></li>
-                        <li><a href="#features">Features</a></li>
-                        <li><a href="#how-to">How To</a></li>
-                        <li><a href="#">FAQ</a></li>
-                    </ul>
+                <div class="form-group">
+                    <label for="helpMessage">Message</label>
+                    <textarea id="helpMessage" rows="5" required></textarea>
                 </div>
-                <div class="footer-column">
-                    <h3>Legal</h3>
-                    <ul>
-                        <li><a href="#">Terms of Service</a></li>
-                        <li><a href="#">Privacy Policy</a></li>
-                        <li><a href="#">DMCA</a></li>
-                        <li><a href="#">Contact</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="copyright">
-                &copy; 2023 InstaSave. All rights reserved. This tool is not affiliated with Instagram.
-            </div>
+                <button type="submit">Submit</button>
+            </form>
         </div>
-    </footer>
-
+    </div>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+    
     <script>
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+    apiKey: "AIzaSyCgswS8AZObwKQjxZooWWJHf4b1m1rvorA",
+    authDomain: "t2upload.firebaseapp.com",
+    databaseURL: "https://t2upload-default-rtdb.firebaseio.com",
+    projectId: "t2upload",
+    storageBucket: "t2upload.appspot.com",
+    messagingSenderId: "1000887477924",
+    appId: "1:1000887477924:web:522232d054b9b7ce2ea831",
+    measurementId: "G-75ZZL6BWVH"
+};
+        
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        const storage = firebase.storage();
+        
         // DOM Elements
-        const instaUrl = document.getElementById('instaUrl');
-        const fetchBtn = document.getElementById('fetchBtn');
-        const loader = document.getElementById('loader');
-        const errorMessage = document.getElementById('errorMessage');
-        const resultContainer = document.getElementById('resultContainer');
-        const mediaPreview = document.getElementById('mediaPreview');
-        const downloadBtn = document.getElementById('downloadBtn');
-        const copyBtn = document.getElementById('copyBtn');
-        const optionBtns = document.querySelectorAll('.option-btn');
-
-        // Sample media data (in a real app, this would come from an API)
-        const sampleMedia = {
-            reel: {
-                url: 'https://insta-downloder.netlify.app/download/reel123',
-                thumbnail: 'https://via.placeholder.com/600x800/833AB4/FFFFFF?text=Reel+Preview'
-            },
-            photo: {
-                url: 'https://insta-downloder.netlify.app/download/photo123',
-                thumbnail: 'https://via.placeholder.com/600x600/405DE6/FFFFFF?text=Photo+Preview'
-            },
-            video: {
-                url: 'https://insta-downloder.netlify.app/download/video123',
-                thumbnail: 'https://via.placeholder.com/600x800/FD1D1D/FFFFFF?text=Video+Preview'
-            },
-            story: {
-                url: 'https://insta-downloder.netlify.app/download/story123',
-                thumbnail: 'https://via.placeholder.com/600x1067/C13584/FFFFFF?text=Story+Preview'
-            }
-        };
-
-        // Current media to download
-        let currentMedia = null;
-
+        const menuDots = document.getElementById('menuDots');
+        const dropdownMenu = document.getElementById('dropdownMenu');
+        const helpCenterBtn = document.getElementById('helpCenterBtn');
+        const adminLoginBtn = document.getElementById('adminLoginBtn');
+        const helpModal = document.getElementById('helpModal');
+        const adminPanel = document.getElementById('adminPanel');
+        const websitesContainer = document.getElementById('websitesContainer');
+        const searchInput = document.getElementById('searchInput');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        
+        // Variables
+        let currentUser = null;
+        let currentPage = 1;
+        const itemsPerPage = 6;
+        
         // Event Listeners
-        fetchBtn.addEventListener('click', fetchMedia);
-        downloadBtn.addEventListener('click', downloadMedia);
-        copyBtn.addEventListener('click', copyMediaLink);
-        optionBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                optionBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-            });
+        menuDots.addEventListener('click', () => {
+            dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
         });
-
-        // Fetch media function
-        function fetchMedia() {
-            const url = instaUrl.value.trim();
-            
-            // Validate URL
-            if (!url) {
-                showError('Please enter an Instagram URL');
-                return;
+        
+        helpCenterBtn.addEventListener('click', () => {
+            helpModal.style.display = 'block';
+        });
+        
+        adminLoginBtn.addEventListener('click', () => {
+            // Implement admin login logic
+            const password = prompt("Enter admin password:");
+            if (password === "YOUR_ADMIN_PASSWORD") {
+                currentUser = { isAdmin: true };
+                adminPanel.style.display = 'block';
+                alert("Admin access granted");
+            } else {
+                alert("Incorrect password");
             }
-            
-            if (!isValidInstagramUrl(url)) {
-                showError('Please enter a valid Instagram URL');
-                return;
+        });
+        
+        window.addEventListener('click', (e) => {
+            if (e.target === helpModal) {
+                helpModal.style.display = 'none';
             }
+            if (!e.target.closest('.menu-dots') && dropdownMenu.style.display === 'block') {
+                dropdownMenu.style.display = 'none';
+            }
+        });
+        
+        searchInput.addEventListener('input', () => {
+            currentPage = 1;
+            loadWebsites();
+        });
+        
+        prevBtn.addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                loadWebsites();
+            }
+        });
+        
+        nextBtn.addEventListener('click', () => {
+            currentPage++;
+            loadWebsites();
+        });
+        
+        // Functions
+        function loadWebsites() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const websitesRef = database.ref('websites');
             
-            // Show loader
-            loader.style.display = 'block';
-            errorMessage.style.display = 'none';
-            resultContainer.style.display = 'none';
-            
-            // Simulate API call with timeout
-            setTimeout(() => {
-                loader.style.display = 'none';
-                
-                // Determine media type from URL (simplified for demo)
-                let mediaType = 'photo';
-                if (url.includes('/reel/') || url.includes('/reels/')) {
-                    mediaType = 'reel';
-                } else if (url.includes('/tv/') || url.includes('/video/')) {
-                    mediaType = 'video';
-                } else if (url.includes('/stories/')) {
-                    mediaType = 'story';
-                }
-                
-                // Set current media
-                currentMedia = sampleMedia[mediaType];
-                
-                // Display result
-                mediaPreview.src = currentMedia.thumbnail;
-                resultContainer.style.display = 'block';
-                
-            }, 1500);
-        }
-
-        // Download media function
-        function downloadMedia() {
-            if (!currentMedia) return;
-            
-            // In a real app, this would initiate the download
-            // For demo, we'll show an alert
-            alert('Download would start for: ' + currentMedia.url);
-            
-            // Simulate download (in a real app, you would use window.location.href or create an anchor tag)
-            console.log('Downloading:', currentMedia.url);
-        }
-
-        // Copy media link function
-        function copyMediaLink() {
-            if (!currentMedia) return;
-            
-            navigator.clipboard.writeText(currentMedia.url)
-                .then(() => {
-                    // Show success message
-                    const originalText = copyBtn.innerHTML;
-                    copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
-                    
-                    setTimeout(() => {
-                        copyBtn.innerHTML = originalText;
-                    }, 2000);
-                })
-                .catch(err => {
-                    console.error('Failed to copy: ', err);
+            websitesRef.once('value', (snapshot) => {
+                const allWebsites = [];
+                snapshot.forEach((childSnapshot) => {
+                    allWebsites.push({ id: childSnapshot.key, ...childSnapshot.val() });
                 });
+                
+                // Filter by search term if any
+                const filteredWebsites = searchTerm 
+                    ? allWebsites.filter(website => 
+                        website.title.toLowerCase().includes(searchTerm) || 
+                        website.description.toLowerCase().includes(searchTerm))
+                    : allWebsites;
+                
+                // Pagination
+                const startIndex = (currentPage - 1) * itemsPerPage;
+                const endIndex = startIndex + itemsPerPage;
+                const websitesToShow = filteredWebsites.slice(startIndex, endIndex);
+                
+                // Render websites
+                renderWebsites(websitesToShow);
+                
+                // Update pagination buttons
+                prevBtn.disabled = currentPage === 1;
+                nextBtn.disabled = endIndex >= filteredWebsites.length;
+            });
         }
-
-        // Show error message
-        function showError(message) {
-            errorMessage.textContent = message;
-            errorMessage.style.display = 'block';
-            resultContainer.style.display = 'none';
-            loader.style.display = 'none';
-        }
-
-        // Validate Instagram URL (simplified)
-        function isValidInstagramUrl(url) {
-            return url.includes('instagram.com/');
-        }
-
-        // Smooth scrolling for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
+        
+        function renderWebsites(websites) {
+            websitesContainer.innerHTML = '';
+            
+            websites.forEach(website => {
+                const websiteCard = document.createElement('div');
+                websiteCard.className = 'website-card';
+                websiteCard.innerHTML = `
+                    <div class="card-image" style="background-image: url('${website.imageUrl || 'https://via.placeholder.com/300x200'}')"></div>
+                    <div class="card-content">
+                        <h3>${website.title}</h3>
+                        <p>${website.description || 'No description available'}</p>
+                        <a href="${website.url}" target="_blank" class="visit-btn">View Now</a>
+                        ${currentUser && currentUser.isAdmin ? `
+                            <button class="delete-btn" data-id="${website.id}">Delete</button>
+                        ` : ''}
+                    </div>
+                `;
+                websitesContainer.appendChild(websiteCard);
+            });
+            
+            // Add event listeners to delete buttons if admin
+            if (currentUser && currentUser.isAdmin) {
+                document.querySelectorAll('.delete-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        if (confirm("Are you sure you want to delete this website?")) {
+                            const websiteId = e.target.getAttribute('data-id');
+                            database.ref(`websites/${websiteId}`).remove()
+                                .then(() => {
+                                    alert("Website deleted successfully");
+                                    loadWebsites();
+                                });
+                        }
+                    });
                 });
+            }
+        }
+        
+        // Initialize
+        loadWebsites();
+        
+        // Admin functionality
+        document.getElementById('addWebsiteBtn').addEventListener('click', () => {
+            const title = prompt("Enter website title:");
+            if (title) {
+                const url = prompt("Enter website URL:");
+                const description = prompt("Enter website description:");
+                
+                const newWebsite = {
+                    title,
+                    url,
+                    description,
+                    createdAt: firebase.database.ServerValue.TIMESTAMP
+                };
+                
+                database.ref('websites').push(newWebsite)
+                    .then(() => {
+                        alert("Website added successfully");
+                        loadWebsites();
+                    });
+            }
+        });
+        
+        // Help center form submission
+        document.getElementById('helpForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const subject = document.getElementById('helpSubject').value;
+            const message = document.getElementById('helpMessage').value;
+            
+            database.ref('helpRequests').push({
+                subject,
+                message,
+                createdAt: firebase.database.ServerValue.TIMESTAMP,
+                status: 'new'
+            }).then(() => {
+                alert("Your request has been submitted. We'll get back to you soon.");
+                helpModal.style.display = 'none';
+                document.getElementById('helpForm').reset();
             });
         });
     </script>
