@@ -1,3 +1,4 @@
+<!-- Updated index.html to support image URL instead of storage upload -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,13 +10,11 @@
       box-sizing: border-box;
     }
     body {
-      
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
       background-color: #f4f4f4;
     }
     header {
-      height: 80px;
       background-color: #2c3e50;
       color: white;
       text-align: center;
@@ -80,7 +79,11 @@
     .card a:hover {
       background-color: #1abc9c;
     }
-
+    @media (max-width: 600px) {
+      .card img {
+        height: 140px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -95,16 +98,16 @@
   };
 </script>
 <script type="text/javascript" src="//www.highperformanceformat.com/f53379a59583bd4e6c4a01d3805a15f2/invoke.js"></script>
+
   <header>
-    
-    <h2>Premium Movies</h2>
+    <h1>Premium Movies</h1>
   </header>
   
+    
   <div class="search-container">
     <input type="text" id="searchInput" placeholder="Search websites...">
   </div>
   <script type="text/javascript" src="//www.highperformanceformat.com/786f6131c0b0ea51526ba4940a1022b7/invoke.js"></script>
-    
   <div class="container" id="siteList"></div>
   <script type="text/javascript" src="//www.highperformanceformat.com/786f6131c0b0ea51526ba4940a1022b7/invoke.js"></script>
   
@@ -131,6 +134,7 @@
 <script type="text/javascript" src="//www.highperformanceformat.com/546f2a83d45766968f5ae560fd543717/invoke.js"></script>
     
 
+
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 
@@ -154,12 +158,29 @@
     function renderSite(data) {
       const card = document.createElement("div");
       card.className = "card";
-      card.innerHTML = `
-        <img src="${data.imageURL}" alt="Website Image">
-        <h3>${data.name}</h3>
-        <p>${data.description}</p>
-        <a href="${data.url}" target="_blank">View Now</a>
-      `;
+
+      const image = document.createElement("img");
+      image.src = data.imageURL || 'https://via.placeholder.com/400x180?text=No+Image';
+      image.alt = "Website Image";
+      image.onerror = function() {
+        image.src = 'https://via.placeholder.com/400x180?text=No+Image';
+      }
+      card.appendChild(image);
+
+      const title = document.createElement("h3");
+      title.textContent = data.name;
+      card.appendChild(title);
+
+      const desc = document.createElement("p");
+      desc.textContent = data.description;
+      card.appendChild(desc);
+
+      const link = document.createElement("a");
+      link.href = data.url;
+      link.target = "_blank";
+      link.textContent = "View Now";
+      card.appendChild(link);
+
       return card;
     }
 
@@ -171,7 +192,10 @@
           site.timestamp = child.val().timestamp || 0;
           sites.push(site);
         });
-        sites.sort((a, b) => b.timestamp - a.timestamp); // Newest first
+
+        // Sort by newest
+        sites.sort((a, b) => b.timestamp - a.timestamp);
+
         displaySites(sites);
       });
     }
