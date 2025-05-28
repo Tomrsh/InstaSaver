@@ -1,82 +1,85 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Admin Panel</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
       margin: 0;
-      padding: 0;
-      background-color: #f9f9f9;
+      padding: 1rem;
+      background: #f2f2f2;
     }
-    header {
-      background-color: #333;
-      color: white;
-      padding: 20px;
+    h1, h2 {
       text-align: center;
     }
-    .container {
-      max-width: 800px;
+    form {
+      max-width: 500px;
       margin: auto;
-      padding: 20px;
+      padding: 1rem;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
-    input, textarea {
-      display: block;
-      margin: 10px 0;
-      padding: 10px;
+    input, textarea, button {
       width: 100%;
-      border-radius: 6px;
+      padding: 0.75rem;
+      margin-bottom: 1rem;
       border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
     }
     button {
-      padding: 10px 16px;
-      margin: 10px 5px 20px 0;
-      border: none;
-      background-color: #4CAF50;
+      background: #3498db;
       color: white;
-      border-radius: 6px;
       cursor: pointer;
+      border: none;
     }
-    .card {
+    button:hover {
+      background: #2980b9;
+    }
+    .site-item {
       background: white;
-      padding: 20px;
+      padding: 1rem;
+      margin: 1rem auto;
       border-radius: 10px;
-      margin-bottom: 15px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      max-width: 600px;
     }
-    img {
-      width: 100px;
-      border-radius: 6px;
-      margin-top: 10px;
+    .site-item img {
+      width: 100%;
+      max-height: 180px;
+      object-fit: cover;
+      margin-bottom: 0.5rem;
     }
-    .stats {
-      font-weight: bold;
-      margin-bottom: 20px;
+    .site-item button {
+      width: auto;
+      margin-right: 0.5rem;
     }
   </style>
 </head>
 <body>
-  <header>
-    <h2>Admin Panel</h2>
-  </header>
-  <div class="container">
-    <h3>Upload New Website</h3>
-    <input type="text" id="siteName" placeholder="Website Name">
-    <textarea id="siteDesc" placeholder="Website Description"></textarea>
-    <input type="text" id="siteURL" placeholder="Website URL">
-    <input type="file" id="siteImage">
-    <button onclick="uploadSite()">Upload</button>
 
-    <div class="stats">Total Websites: <span id="count">0</span></div>
-    <div id="adminList"></div>
-  </div>
+<h1>Admin Panel</h1>
 
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
+<form id="siteForm">
+  <input type="text" id="name" placeholder="Website Name" required>
+  <textarea id="description" placeholder="Website Description" required></textarea>
+  <input type="url" id="url" placeholder="Website URL" required>
+  <input type="url" id="imageURL" placeholder="Image URL" required>
+  <input type="hidden" id="editKey">
+  <button type="submit">Save Website</button>
+</form>
 
-  <script>
-    const firebaseConfig = {
+<h2>Uploaded Websites</h2>
+<div id="siteList"></div>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
+<script>
+  const firebaseConfig = {
   apiKey: "AIzaSyCgswS8AZObwKQjxZooWWJHf4b1m1rvorA",
   authDomain: "t2upload.firebaseapp.com",
   databaseURL: "https://t2upload-default-rtdb.firebaseio.com",
@@ -87,97 +90,98 @@
   measurementId: "G-75ZZL6BWVH"
 };
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-    const storage = firebase.storage();
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
 
-    const siteName = document.getElementById('siteName');
-    const siteDesc = document.getElementById('siteDesc');
-    const siteURL = document.getElementById('siteURL');
-    const siteImage = document.getElementById('siteImage');
-    const adminList = document.getElementById('adminList');
-    const countDisplay = document.getElementById('count');
+  const form = document.getElementById("siteForm");
+  const siteList = document.getElementById("siteList");
 
-    function uploadSite() {
-      const file = siteImage.files[0];
-      const ref = storage.ref('siteImages/' + file.name);
-      ref.put(file).then(snapshot => {
-        ref.getDownloadURL().then(url => {
-          const newRef = db.ref('websites').push();
-          newRef.set({
-            name: siteName.value,
-            description: siteDesc.value,
-            url: siteURL.value,
-            imageURL: url,
-            timestamp: Date.now()
-          });
-          siteName.value = '';
-          siteDesc.value = '';
-          siteURL.value = '';
-          siteImage.value = '';
-        });
-      });
+  form.addEventListener("submit", e => {
+    e.preventDefault();
+    const name = document.getElementById("name").value;
+    const description = document.getElementById("description").value;
+    const url = document.getElementById("url").value;
+    const imageURL = document.getElementById("imageURL").value;
+    const editKey = document.getElementById("editKey").value;
+
+    const siteData = {
+      name,
+      description,
+      url,
+      imageURL,
+      timestamp: Date.now()
+    };
+
+    if (editKey) {
+      db.ref("websites/" + editKey).set(siteData);
+    } else {
+      db.ref("websites").push(siteData);
     }
 
-    function renderAdminSite(key, data) {
-      const div = document.createElement('div');
-      div.className = 'card';
-      div.innerHTML = `
-        <p><b>${data.name}</b></p>
-        <p>${data.description}</p>
-        <img src="${data.imageURL}" id="img-${key}"><br>
-        <input type="file" onchange="updateImage(event, '${key}')">
-        <button onclick="deleteSite('${key}')">Delete</button>
-        <button onclick="editSite('${key}', '${data.name}', '${data.description}', '${data.url}')">Edit</button>
-      `;
-      return div;
-    }
+    form.reset();
+    document.getElementById("editKey").value = "";
+  });
 
-    function loadAdminSites() {
-      adminList.innerHTML = '';
-      db.ref('websites').orderByChild('timestamp').on('value', snapshot => {
-        const children = [];
-        snapshot.forEach(child => children.push(child));
-        children.reverse().forEach(child => {
-          const key = child.key;
-          const data = child.val();
-          const div = renderAdminSite(key, data);
-          adminList.appendChild(div);
-        });
-        countDisplay.innerText = children.length;
-      });
-    }
+  function renderSite(key, data) {
+    const div = document.createElement("div");
+    div.className = "site-item";
 
-    function deleteSite(key) {
-      db.ref('websites/' + key).remove();
-    }
+    const img = document.createElement("img");
+    img.src = data.imageURL;
+    img.onerror = () => img.src = 'https://via.placeholder.com/400x180?text=No+Image';
 
-    function editSite(key, name, desc, url) {
-      const newName = prompt('Edit name:', name);
-      const newDesc = prompt('Edit description:', desc);
-      const newURL = prompt('Edit URL:', url);
-      if (newName && newDesc && newURL) {
-        db.ref('websites/' + key).update({
-          name: newName,
-          description: newDesc,
-          url: newURL
-        });
+    const title = document.createElement("h3");
+    title.textContent = data.name;
+
+    const desc = document.createElement("p");
+    desc.textContent = data.description;
+
+    const visit = document.createElement("a");
+    visit.href = data.url;
+    visit.target = "_blank";
+    visit.textContent = "Visit Website";
+    visit.style.display = "block";
+    visit.style.margin = "0.5rem 0";
+
+    const editBtn = document.createElement("button");
+    editBtn.textContent = "Edit";
+    editBtn.onclick = () => {
+      document.getElementById("name").value = data.name;
+      document.getElementById("description").value = data.description;
+      document.getElementById("url").value = data.url;
+      document.getElementById("imageURL").value = data.imageURL;
+      document.getElementById("editKey").value = key;
+    };
+
+    const delBtn = document.createElement("button");
+    delBtn.textContent = "Delete";
+    delBtn.onclick = () => {
+      if (confirm("Delete this website?")) {
+        db.ref("websites/" + key).remove();
       }
-    }
+    };
 
-    function updateImage(event, key) {
-      const file = event.target.files[0];
-      if (!file) return;
-      const ref = storage.ref('siteImages/' + file.name);
-      ref.put(file).then(snapshot => {
-        ref.getDownloadURL().then(url => {
-          db.ref('websites/' + key).update({ imageURL: url });
-          document.getElementById('img-' + key).src = url;
-        });
-      });
-    }
+    div.appendChild(img);
+    div.appendChild(title);
+    div.appendChild(desc);
+    div.appendChild(visit);
+    div.appendChild(editBtn);
+    div.appendChild(delBtn);
 
-    loadAdminSites();
-  </script>
+    return div;
+  }
+
+  db.ref("websites").on("value", snapshot => {
+    siteList.innerHTML = "";
+    const sites = [];
+    snapshot.forEach(child => {
+      sites.push({ key: child.key, data: child.val() });
+    });
+    sites.sort((a, b) => b.data.timestamp - a.data.timestamp);
+    sites.forEach(site => {
+      siteList.appendChild(renderSite(site.key, site.data));
+    });
+  });
+</script>
 </body>
 </html>
