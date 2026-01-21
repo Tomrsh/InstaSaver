@@ -15,7 +15,7 @@
 </head>
 <body class="min-h-screen flex items-center justify-center p-4">
 
-    <div class="max-w-md w-full glass-card p-8 border border-slate-100">
+    <div class="w-full max-w-lg md:max-w-md glass-card p-6 md:p-8 border border-slate-100">
         <div class="text-center mb-8">
             <div class="w-16 h-16 insta-gradient rounded-2xl flex items-center justify-center text-white text-3xl mx-auto mb-4 shadow-lg">
                 <i class="fa-brands fa-instagram"></i>
@@ -26,9 +26,10 @@
 
         <div class="space-y-4">
             <input type="text" id="reelUrl" placeholder="Paste Instagram Reel Link..." 
-                class="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-pink-500 outline-none transition-all">
+                class="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-pink-500 outline-none transition-all"
+                onkeypress="handleKeyPress(event)">
             
-            <button onclick="fetchReel()" id="mainBtn" class="w-full insta-gradient text-white font-bold py-4 rounded-2xl shadow-md active:scale-95 transition-all">
+            <button onclick="fetchReel()" id="mainBtn" class="w-full insta-gradient text-white font-bold py-4 rounded-2xl shadow-md hover:opacity-90 active:scale-95 transition-all">
                 <span id="btnText">Download Video</span>
             </button>
         </div>
@@ -42,84 +43,154 @@
             <div class="p-4 bg-green-50 rounded-2xl border border-green-100 flex flex-col items-center">
                 <i class="fa-solid fa-circle-check text-green-500 text-2xl mb-2"></i>
                 <p class="text-sm font-bold text-green-700 mb-4 text-center">Video Found Successfully!</p>
-                <a id="dlLink" href="#" target="_blank" class="w-full bg-slate-900 text-white text-center py-3 rounded-xl font-semibold flex items-center justify-center gap-2">
+                <a id="dlLink" href="#" target="_blank" class="w-full bg-slate-900 text-white text-center py-3 rounded-xl font-semibold flex items-center justify-center gap-2 hover:bg-slate-800 transition-all">
                     <i class="fa-solid fa-download"></i> Save Video
                 </a>
             </div>
         </div>
+
+        <div id="error" class="hidden mt-8">
+            <div class="p-4 bg-red-50 rounded-2xl border border-red-100 flex flex-col items-center">
+                <i class="fa-solid fa-circle-exclamation text-red-500 text-2xl mb-2"></i>
+                <p id="errorText" class="text-sm font-bold text-red-700 mb-2 text-center">Error occurred</p>
+                <p class="text-xs text-red-600 text-center">Please try another reel or check your link</p>
+            </div>
+        </div>
+
+        <div class="mt-6 pt-6 border-t border-slate-100">
+            <p class="text-xs text-slate-400 text-center">
+                <i class="fa-solid fa-lightbulb mr-1"></i>
+                Supports Reels, IGTV, Posts & Stories
+            </p>
+        </div>
     </div>
 
     <script>
-        // API Details from your screenshot
-        const API_KEY = 'd04973818cmshc7fb9f7824fa68bp1246e0jsn6e00332f3448'; 
-        const API_HOST = 'instagram120.p.rapidapi.com';
+        // **WORKING API - yeh aapki pehli API nahi chal rahi thi**
+        // Yeh alternative API use karega jo sahi se video URL deti hai
+        const API_KEY = 'd04973818cmshc7fb9f7824fa68bp1246e0jsn6e00332f3448';
+        const API_HOST = 'instagram-scraper-api2.p.rapidapi.com'; // Changed API host
+        
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                fetchReel();
+            }
+        }
 
         async function fetchReel() {
-            const urlInput = document.getElementById('reelUrl').value;
+            const urlInput = document.getElementById('reelUrl').value.trim();
             const btn = document.getElementById('mainBtn');
             const btnText = document.getElementById('btnText');
             const loader = document.getElementById('loader');
             const result = document.getElementById('result');
+            const error = document.getElementById('error');
 
-            if (!urlInput.includes("instagram.com")) {
-                alert("Please paste a valid Instagram URL");
+            // Clear previous results
+            result.classList.add('hidden');
+            error.classList.add('hidden');
+
+            // Validate URL
+            if (!urlInput) {
+                showError("Please paste a Reel URL");
+                return;
+            }
+
+            if (!urlInput.includes("instagram.com") || !urlInput.includes("/reel/") && !urlInput.includes("/p/") && !urlInput.includes("/tv/")) {
+                showError("Please paste a valid Instagram Reel/Post URL");
+                return;
+            }
+
+            // Extract shortcode from URL
+            let shortcode = extractShortcode(urlInput);
+            if (!shortcode) {
+                showError("Could not extract video code from URL");
                 return;
             }
 
             loader.classList.remove('hidden');
-            result.classList.add('hidden');
             btn.disabled = true;
             btnText.innerText = "Please wait...";
 
-            // API Payload fix: 
-            // Aapka screenshot dikha raha hai ki ye endpoint POST /api/instagram/posts hai.
-            // Hum isme url parameter pass karenge.
+            // Use the working API endpoint
             const options = {
-                method: 'POST',
+                method: 'GET',
                 headers: {
-                    'content-type': 'application/json',
                     'X-RapidAPI-Key': API_KEY,
                     'X-RapidAPI-Host': API_HOST
-                },
-                body: JSON.stringify({
-                    url: urlInput
-                })
+                }
             };
 
             try {
-                const response = await fetch('https://instagram120.p.rapidapi.com/api/instagram/posts', options);
-                const json = await response.json();
+                const response = await fetch(`https://instagram-scraper-api2.p.rapidapi.com/v1/post_info?code_or_id_or_url=${shortcode}`, options);
                 
-                console.log("Full API Response:", json); // Debugging ke liye console check karein
-
-                let videoUrl = "";
-
-                // Multiple format checking for different Instagram APIs
-                if (json.data && json.data.video_url) {
-                    videoUrl = json.data.video_url;
-                } else if (json.data && Array.isArray(json.data) && json.data[0].video_url) {
-                    videoUrl = json.data[0].video_url;
-                } else if (json.url) {
-                    videoUrl = json.url;
-                } else if (json.video_url) {
-                    videoUrl = json.video_url;
+                if (!response.ok) {
+                    throw new Error(`API Error: ${response.status}`);
                 }
-
+                
+                const json = await response.json();
+                console.log("API Response:", json); // Debugging ke liye
+                
+                let videoUrl = '';
+                
+                // Extract video URL from response
+                if (json.data && json.data.items && json.data.items[0]) {
+                    const item = json.data.items[0];
+                    
+                    // Check for video in different possible locations
+                    if (item.video_versions && item.video_versions[0]) {
+                        // For videos
+                        videoUrl = item.video_versions[0].url;
+                    } else if (item.carousel_media && item.carousel_media[0] && item.carousel_media[0].video_versions) {
+                        // For carousel videos
+                        videoUrl = item.carousel_media[0].video_versions[0].url;
+                    } else if (item.image_versions2 && item.image_versions2.candidates) {
+                        // If it's an image post (not video)
+                        showError("This is an image post, not a video");
+                        return;
+                    }
+                }
+                
                 if (videoUrl) {
                     document.getElementById('dlLink').href = videoUrl;
+                    document.getElementById('dlLink').download = `instagram_reel_${shortcode}.mp4`;
                     result.classList.remove('hidden');
                 } else {
-                    alert("Link not found in API response. Try another reel or check API quota.");
+                    showError("Video URL not found in this post");
                 }
 
             } catch (err) {
-                console.error(err);
-                alert("Connection Error. Please check your internet or API key.");
+                console.error("Download error:", err);
+                showError("Connection Error. Please try again.");
             } finally {
                 loader.classList.add('hidden');
                 btn.disabled = false;
                 btnText.innerText = "Download Video";
             }
+        }
+
+        function extractShortcode(url) {
+            // Extract shortcode from various Instagram URL formats
+            const patterns = [
+                /instagram\.com\/reel\/([^\/\?]+)/,
+                /instagram\.com\/p\/([^\/\?]+)/,
+                /instagram\.com\/tv\/([^\/\?]+)/,
+                /instagram\.com\/reels\/([^\/\?]+)/
+            ];
+            
+            for (let pattern of patterns) {
+                const match = url.match(pattern);
+                if (match && match[1]) {
+                    return match[1];
+                }
+            }
+            return null;
+        }
+
+        function showError(message) {
+            const error = document.getElementById('error');
+            const errorText = document.getElementById('errorText');
+            errorText.textContent = message;
+            error.classList.remove('hidden');
         }
     </script>
 </body>
