@@ -1,340 +1,126 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Instagram Reels Downloader - Unlimited Downloads</title>
+    <title>InstaReels HD Downloader</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .container {
-            background: white;
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 500px;
-            text-align: center;
-        }
-
-        .logo {
-            font-size: 2.5rem;
-            color: #E1306C;
-            margin-bottom: 10px;
-        }
-
-        h1 {
-            color: #333;
-            margin-bottom: 10px;
-            font-size: 1.8rem;
-        }
-
-        .subtitle {
-            color: #666;
-            margin-bottom: 30px;
-            font-size: 1rem;
-        }
-
-        .input-group {
-            position: relative;
-            margin-bottom: 20px;
-        }
-
-        input[type="text"] {
-            width: 100%;
-            padding: 15px 20px;
-            border: 2px solid #e1e1e1;
-            border-radius: 50px;
-            font-size: 16px;
-            outline: none;
-            transition: all 0.3s ease;
-        }
-
-        input[type="text"]:focus {
-            border-color: #E1306C;
-            box-shadow: 0 0 0 3px rgba(225, 48, 108, 0.1);
-        }
-
-        .download-btn {
-            background: linear-gradient(45deg, #E1306C, #F77737);
-            color: white;
-            border: none;
-            padding: 15px 40px;
-            border-radius: 50px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            width: 100%;
-            margin-bottom: 20px;
-        }
-
-        .download-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(225, 48, 108, 0.3);
-        }
-
-        .download-btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .loading {
-            display: none;
-            margin: 20px 0;
-        }
-
-        .spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #E1306C;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .result {
-            display: none;
-            margin-top: 20px;
-            padding: 20px;
-            background: #f8f9fa;
-            border-radius: 10px;
-            text-align: left;
-        }
-
-        .video-preview {
-            width: 100%;
-            border-radius: 10px;
-            margin-bottom: 15px;
-        }
-
-        .download-link {
-            display: block;
-            background: #28a745;
-            color: white;
-            text-decoration: none;
-            padding: 12px 20px;
-            border-radius: 50px;
-            text-align: center;
-            font-weight: bold;
-            margin-top: 10px;
-        }
-
-        .features {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin-top: 30px;
-        }
-
-        .feature {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 10px;
-            text-align: center;
-        }
-
-        .feature i {
-            font-size: 24px;
-            color: #E1306C;
-            margin-bottom: 8px;
-        }
-
-        .instructions {
-            background: #fff3cd;
-            border: 1px solid #ffeaa7;
-            border-radius: 10px;
-            padding: 15px;
-            margin-top: 20px;
-            text-align: left;
-        }
-
-        .instructions h3 {
-            color: #856404;
-            margin-bottom: 10px;
-        }
-
-        .instructions ol {
-            padding-left: 20px;
-        }
-
-        .instructions li {
-            margin-bottom: 8px;
-            color: #856404;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                padding: 30px 20px;
-                margin: 20px;
-            }
-            
-            .features {
-                grid-template-columns: 1fr;
-            }
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
+        .insta-gradient { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
+        .glass-card { background: white; border-radius: 2rem; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1); }
     </style>
 </head>
-<body>
-    <div class="container">
-        <div class="logo">📸</div>
-        <h1>Instagram Reels Downloader</h1>
-        <p class="subtitle">Unlimited Downloads • 100% Free • No Watermark</p>
-        
-        <div class="input-group">
-            <input type="text" id="reelUrl" placeholder="Paste Instagram Reel URL here..." autocomplete="off">
-        </div>
-        
-        <button class="download-btn" onclick="downloadReel()" id="downloadBtn">
-            Download Reel
-        </button>
-        
-        <div class="loading" id="loading">
-            <div class="spinner"></div>
-            <p>Downloading your reel... Please wait</p>
-        </div>
-        
-        <div class="result" id="result">
-            <!-- Result will be shown here -->
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <div class="max-w-md w-full glass-card p-8 border border-slate-100">
+        <div class="text-center mb-8">
+            <div class="w-16 h-16 insta-gradient rounded-2xl flex items-center justify-center text-white text-3xl mx-auto mb-4 shadow-lg">
+                <i class="fa-brands fa-instagram"></i>
+            </div>
+            <h1 class="text-2xl font-bold text-slate-800">Reels Downloader</h1>
+            <p class="text-slate-500 text-sm">Download high-quality Instagram videos</p>
         </div>
 
-        <div class="instructions">
-            <h3>How to Download:</h3>
-            <ol>
-                <li>Open Instagram App</li>
-                <li>Copy Reel URL (Tap 3 dots → Copy Link)</li>
-                <li>Paste URL above and Download!</li>
-            </ol>
+        <div class="space-y-4">
+            <input type="text" id="reelUrl" placeholder="Paste Instagram Reel Link..." 
+                class="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-pink-500 outline-none transition-all">
+            
+            <button onclick="fetchReel()" id="mainBtn" class="w-full insta-gradient text-white font-bold py-4 rounded-2xl shadow-md active:scale-95 transition-all">
+                <span id="btnText">Download Video</span>
+            </button>
         </div>
-        
-        <div class="features">
-            <div class="feature">
-                <div>⚡</div>
-                <h3>Fast</h3>
-                <p>Quick Downloads</p>
-            </div>
-            <div class="feature">
-                <div>🔒</div>
-                <h3>Safe</h3>
-                <p>No Login Required</p>
-            </div>
-            <div class="feature">
-                <div>📱</div>
-                <h3>HD Quality</h3>
-                <p>Original Quality</p>
-            </div>
-            <div class="feature">
-                <div>🎯</div>
-                <h3>Unlimited</h3>
-                <p>No Daily Limits</p>
+
+        <div id="loader" class="hidden mt-8 text-center">
+            <div class="inline-block animate-spin w-8 h-8 border-4 border-pink-500 border-t-transparent rounded-full mb-2"></div>
+            <p class="text-slate-400 text-xs">Analyzing URL...</p>
+        </div>
+
+        <div id="result" class="hidden mt-8">
+            <div class="p-4 bg-green-50 rounded-2xl border border-green-100 flex flex-col items-center">
+                <i class="fa-solid fa-circle-check text-green-500 text-2xl mb-2"></i>
+                <p class="text-sm font-bold text-green-700 mb-4 text-center">Video Found Successfully!</p>
+                <a id="dlLink" href="#" target="_blank" class="w-full bg-slate-900 text-white text-center py-3 rounded-xl font-semibold flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-download"></i> Save Video
+                </a>
             </div>
         </div>
     </div>
 
     <script>
-        function downloadReel() {
-            const url = document.getElementById('reelUrl').value.trim();
-            const downloadBtn = document.getElementById('downloadBtn');
-            const loading = document.getElementById('loading');
+        // API Details from your screenshot
+        const API_KEY = 'd04973818cmshc7fb9f7824fa68bp1246e0jsn6e00332f3448'; 
+        const API_HOST = 'instagram120.p.rapidapi.com';
+
+        async function fetchReel() {
+            const urlInput = document.getElementById('reelUrl').value;
+            const btn = document.getElementById('mainBtn');
+            const btnText = document.getElementById('btnText');
+            const loader = document.getElementById('loader');
             const result = document.getElementById('result');
 
-            // Validation
-            if (!url) {
-                alert('Please paste Instagram Reel URL!');
+            if (!urlInput.includes("instagram.com")) {
+                alert("Please paste a valid Instagram URL");
                 return;
             }
 
-            if (!isValidInstagramUrl(url)) {
-                alert('Please enter a valid Instagram Reel URL!');
-                return;
-            }
+            loader.classList.remove('hidden');
+            result.classList.add('hidden');
+            btn.disabled = true;
+            btnText.innerText = "Please wait...";
 
-            // Show loading
-            downloadBtn.disabled = true;
-            downloadBtn.textContent = 'Downloading...';
-            loading.style.display = 'block';
-            result.style.display = 'none';
+            // API Payload fix: 
+            // Aapka screenshot dikha raha hai ki ye endpoint POST /api/instagram/posts hai.
+            // Hum isme url parameter pass karenge.
+            const options = {
+                method: 'POST',
+                headers: {
+                    'content-type': 'application/json',
+                    'X-RapidAPI-Key': API_KEY,
+                    'X-RapidAPI-Host': API_HOST
+                },
+                body: JSON.stringify({
+                    url: urlInput
+                })
+            };
 
-            // Simulate API call (Replace with actual backend)
-            setTimeout(() => {
-                // This is where you'll integrate with actual download API
-                const videoUrl = extractVideoUrl(url);
+            try {
+                const response = await fetch('https://instagram120.p.rapidapi.com/api/instagram/posts', options);
+                const json = await response.json();
                 
-                loading.style.display = 'none';
-                downloadBtn.disabled = false;
-                downloadBtn.textContent = 'Download Reel';
-                
+                console.log("Full API Response:", json); // Debugging ke liye console check karein
+
+                let videoUrl = "";
+
+                // Multiple format checking for different Instagram APIs
+                if (json.data && json.data.video_url) {
+                    videoUrl = json.data.video_url;
+                } else if (json.data && Array.isArray(json.data) && json.data[0].video_url) {
+                    videoUrl = json.data[0].video_url;
+                } else if (json.url) {
+                    videoUrl = json.url;
+                } else if (json.video_url) {
+                    videoUrl = json.video_url;
+                }
+
                 if (videoUrl) {
-                    showResult(videoUrl);
+                    document.getElementById('dlLink').href = videoUrl;
+                    result.classList.remove('hidden');
                 } else {
-                    alert('Download failed! Please try again.');
+                    alert("Link not found in API response. Try another reel or check API quota.");
                 }
-            }, 2000);
-        }
 
-        function isValidInstagramUrl(url) {
-            const instagramRegex = /https?:\/\/(www\.)?instagram\.com\/(p|reel)\/[A-Za-z0-9_-]+\/?/;
-            return instagramRegex.test(url);
-        }
-
-        function extractVideoUrl(instagramUrl) {
-            // In real implementation, this will call your backend API
-            // For demo, we'll return a mock video URL
-            return 'https://example.com/video.mp4'; // Replace with actual video URL
-        }
-
-        function showResult(videoUrl) {
-            const result = document.getElementById('result');
-            result.innerHTML = `
-                <h3>✅ Download Ready!</h3>
-                <p>Your Instagram Reel is ready to download</p>
-                <a href="${videoUrl}" class="download-link" download="instagram_reel.mp4">
-                    📥 Download Now
-                </a>
-                <p style="margin-top: 10px; font-size: 12px; color: #666;">
-                    Click the button above to save the video to your device
-                </p>
-            `;
-            result.style.display = 'block';
-        }
-
-        // Enter key support
-        document.getElementById('reelUrl').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                downloadReel();
+            } catch (err) {
+                console.error(err);
+                alert("Connection Error. Please check your internet or API key.");
+            } finally {
+                loader.classList.add('hidden');
+                btn.disabled = false;
+                btnText.innerText = "Download Video";
             }
-        });
-
-        // Paste event listener
-        document.getElementById('reelUrl').addEventListener('paste', function(e) {
-            setTimeout(() => {
-                const url = e.target.value;
-                if (isValidInstagramUrl(url)) {
-                    downloadBtn.focus();
-                }
-            }, 100);
-        });
+        }
     </script>
 </body>
 </html>
